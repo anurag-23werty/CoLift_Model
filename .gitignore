@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.python-version
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# Data & models (tracked by DVC, not git)
+/data/raw/
+/data/interim/
+/data/processed/
+/models/
+*.parquet
+*.csv.gz
+
+# MLflow local runs
+mlruns/
+mlartifacts/
+
+# Secrets / env
+.env
+*.pem
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
