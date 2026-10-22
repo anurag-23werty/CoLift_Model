@@ -1,0 +1,40 @@
+# Data pipeline: `dvc repro` rebuilds everything that is out of date.
+# Data lives in the local DVC cache; a remote (DagsHub) is added in Phase 4.
+stages:
+  download:
+    cmd: python -m uplift.data.download --dataset all
+    deps:
+      - src/uplift/data/download.py
+    outs:
+      - data/raw
+
+  validate:
+    cmd: python -m uplift.data.validate --dataset all
+    deps:
+      - data/raw
+      - src/uplift/data/datasets.py
+      - src/uplift/data/schemas.py
+      - src/uplift/data/stats.py
+      - src/uplift/data/validate.py
+    outs:
+      - reports/validation:
+          cache: false
+
+  split:
+    cmd: python -m uplift.data.split --dataset all
+    deps:
+      - data/raw
+      - reports/validation # split only runs after validation has passed
+      - src/uplift/data/datasets.py
+      - src/uplift/data/split.py
+    params:
+      - configs/base.yaml:
+          - seed
+          - data
+    outs:
+      - data/processed
+    metrics:
+      - reports/splits/hillstrom.json:
+          cache: false
+      - reports/splits/criteo.json:
+          cache: false

@@ -1,0 +1,29 @@
+{
+  "dataset": "criteo",
+  "seed": 42,
+  "sample_frac": 0.1,
+  "train": {
+    "rows": 978571,
+    "fraction": 0.7,
+    "treatment_rate": 0.8499996423356098,
+    "visit_rate": 0.04730162655545689,
+    "conversion_rate": 0.002915475729405429,
+    "sha256": "23a60746d1c7bc625a13b067075869414405149952cdeec69e8021ca4b3c3add"
+  },
+  "val": {
+    "rows": 209694,
+    "fraction": 0.15,
+    "treatment_rate": 0.8500004768853663,
+    "visit_rate": 0.04701135940942516,
+    "conversion_rate": 0.002918538441729377,
+    "sha256": "e7f8c4b0e26bd794bc1cc8365e0f60bcd92d5fc7204c10a810cc489078009380"
+  },
+  "test": {
+    "rows": 209694,
+    "fraction": 0.15,
+    "treatment_rate": 0.8500004768853663,
+    "visit_rate": 0.046925520043491944,
+    "conversion_rate": 0.002918538441729377,
+    "sha256": "9f2ea2b864b76fb540aa06f6411a5de1a8c0ead8064f92de66137b370f857a2d"
+  }
+}

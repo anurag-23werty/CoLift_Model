@@ -1,0 +1,89 @@
+schema: '2.0'
+stages:
+  download:
+    cmd: python -m uplift.data.download --dataset all
+    deps:
+    - path: src/uplift/data/download.py
+      hash: md5
+      md5: 2b4b29570e4684b345408d56843e3ddd
+      size: 5146
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: 61afd0d54ac0d4dbec8602451944d1f2.dir
+      size: 471544912
+      nfiles: 4
+  validate:
+    cmd: python -m uplift.data.validate --dataset all
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 61afd0d54ac0d4dbec8602451944d1f2.dir
+      size: 471544912
+      nfiles: 4
+    - path: src/uplift/data/datasets.py
+      hash: md5
+      md5: 15c7d13e6240516077e34f864b4647eb
+      size: 3214
+    - path: src/uplift/data/schemas.py
+      hash: md5
+      md5: fe09987180b83315ee27446a200fc0ad
+      size: 2510
+    - path: src/uplift/data/stats.py
+      hash: md5
+      md5: 5e60815c89ac1f401b27da37c220e9a8
+      size: 5193
+    - path: src/uplift/data/validate.py
+      hash: md5
+      md5: ce7fe0d8e7fca6f854009dba4ea1cfa6
+      size: 4921
+    outs:
+    - path: reports/validation
+      hash: md5
+      md5: b954fc66bf1e07b12d0fc56bb30db15d.dir
+      size: 8646
+      nfiles: 2
+  split:
+    cmd: python -m uplift.data.split --dataset all
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 61afd0d54ac0d4dbec8602451944d1f2.dir
+      size: 471544912
+      nfiles: 4
+    - path: reports/validation
+      hash: md5
+      md5: b954fc66bf1e07b12d0fc56bb30db15d.dir
+      size: 8646
+      nfiles: 2
+    - path: src/uplift/data/datasets.py
+      hash: md5
+      md5: 15c7d13e6240516077e34f864b4647eb
+      size: 3214
+    - path: src/uplift/data/split.py
+      hash: md5
+      md5: 680b47f9e227207212b0417bb2474f8a
+      size: 5061
+    params:
+      configs/base.yaml:
+        data:
+          dataset: hillstrom
+          outcome: conversion
+          criteo_sample_frac: 0.1
+          test_size: 0.15
+          val_size: 0.15
+        seed: 42
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: ebfb296c80e667cefac2356802eb6fd7.dir
+      size: 24051538
+      nfiles: 6
+    - path: reports/splits/criteo.json
+      hash: md5
+      md5: b916038f30af2b976c743fea2539af90
+      size: 859
+    - path: reports/splits/hillstrom.json
+      hash: md5
+      md5: 2e6bb93bbdaa4d8f6d17fc1e4c0e9afc
+      size: 944

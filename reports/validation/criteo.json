@@ -1,0 +1,135 @@
+{
+  "dataset": "criteo",
+  "n_rows": 13979592,
+  "treatment_rate": 0.8500001287591226,
+  "outcome_rates": {
+    "visit": 0.046992000911042324,
+    "conversion": 0.002916680257907384
+  },
+  "passed": true,
+  "checks": {
+    "schema": {
+      "passed": true
+    },
+    "row_count": {
+      "passed": true,
+      "observed": 13979592,
+      "expected": 13979592
+    },
+    "srm": {
+      "observed": {
+        "0": 2096937,
+        "1": 11882655
+      },
+      "expected_ratio": {
+        "0": 0.15,
+        "1": 0.85
+      },
+      "chi2": 1.8177758481483255e-06,
+      "p_value": 0.9989242531220275,
+      "alpha": 0.001,
+      "passed": true
+    },
+    "leakage": {
+      "passed": true,
+      "features": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8",
+        "f9",
+        "f10",
+        "f11"
+      ]
+    },
+    "balance": {
+      "passed": true,
+      "max_abs_smd": 0.04883634026324088,
+      "per_feature": [
+        {
+          "feature": "f3",
+          "smd": -0.04884
+        },
+        {
+          "feature": "f6",
+          "smd": -0.04045
+        },
+        {
+          "feature": "f5",
+          "smd": -0.03056
+        },
+        {
+          "feature": "f9",
+          "smd": 0.024
+        },
+        {
+          "feature": "f1",
+          "smd": 0.02399
+        },
+        {
+          "feature": "f8",
+          "smd": -0.02243
+        },
+        {
+          "feature": "f7",
+          "smd": 0.02127
+        },
+        {
+          "feature": "f10",
+          "smd": 0.01056
+        },
+        {
+          "feature": "f4",
+          "smd": 0.00797
+        },
+        {
+          "feature": "f0",
+          "smd": -0.00687
+        },
+        {
+          "feature": "f2",
+          "smd": -0.00624
+        },
+        {
+          "feature": "f11",
+          "smd": -0.00516
+        }
+      ]
+    }
+  },
+  "ate": {
+    "visit": {
+      "any_treatment": {
+        "ate": 0.010342403129198284,
+        "se": 0.00014631645066032713,
+        "ci_low": 0.010055628155558312,
+        "ci_high": 0.010629178102838257,
+        "p_value": 0.0,
+        "treated_mean": 0.048543360048743316,
+        "control_mean": 0.03820095691954503,
+        "n_treated": 11882655,
+        "n_control": 2096937,
+        "relative_lift": 0.27073675539019615
+      }
+    },
+    "conversion": {
+      "any_treatment": {
+        "ate": 0.0011518730521316279,
+        "se": 3.437169028999274e-05,
+        "ci_low": 0.001084505777075477,
+        "ci_high": 0.0012192403271877787,
+        "p_value": 3.194807477026664e-246,
+        "treated_mean": 0.0030894610674129645,
+        "control_mean": 0.0019375880152813366,
+        "n_treated": 11882655,
+        "n_control": 2096937,
+        "relative_lift": 0.594488117725262
+      }
+    }
+  }
+}

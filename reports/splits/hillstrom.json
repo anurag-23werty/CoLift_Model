@@ -1,0 +1,32 @@
+{
+  "dataset": "hillstrom",
+  "seed": 42,
+  "sample_frac": 1.0,
+  "train": {
+    "rows": 44800,
+    "fraction": 0.7,
+    "treatment_rate": 0.6670982142857143,
+    "visit_rate": 0.14651785714285714,
+    "conversion_rate": 0.0090625,
+    "spend_rate": 1.0328822135925293,
+    "sha256": "d030e012f19d635a03abbc74bf1323355e2d5b2567f3016b6e196aafbed99095"
+  },
+  "val": {
+    "rows": 9600,
+    "fraction": 0.15,
+    "treatment_rate": 0.6670833333333334,
+    "visit_rate": 0.15,
+    "conversion_rate": 0.008958333333333334,
+    "spend_rate": 0.9701125025749207,
+    "sha256": "68e61c4c08f8896b5560cbe8ae38b7143124f4a13166c059329e607e678cf5c7"
+  },
+  "test": {
+    "rows": 9600,
+    "fraction": 0.15,
+    "treatment_rate": 0.6670833333333334,
+    "visit_rate": 0.14479166666666668,
+    "conversion_rate": 0.008958333333333334,
+    "spend_rate": 1.2158260345458984,
+    "sha256": "3a9631a5252bdf0b33c121ebf6f542d36d10710ff8bb8489df2eb31d1adb1516"
+  }
+}

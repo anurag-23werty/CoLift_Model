@@ -26,7 +26,6 @@ ml = [
 # Experiment tracking & pipelines (Phase 4)
 mlops = [
     "mlflow>=2.12",
-    "dvc>=3.48",
     "optuna>=3.6",
 ]
 # Online serving (Phase 5)
@@ -47,6 +46,9 @@ dev = [
     "ruff>=0.4",
     "mypy>=1.9",
     "pre-commit>=3.7",
+    "dvc>=3.48",
+    "ipykernel>=6.29",
+    "nbconvert>=7.16",
     "types-PyYAML",
     "pandas-stubs",
 ]
