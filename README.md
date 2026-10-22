@@ -43,12 +43,36 @@ incremental conversions at **Y %** of the coupon cost, which saves **₹Z per 1 
 | Dataset | Size | Treatment | Outcomes | Role in this project |
 |---|---|---|---|---|
 | [Hillstrom MineThatData Email](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html) | 64,000 customers | Men's email / Women's email / No email (randomised, 1/3 each) | visit, conversion, **spend** | Main development dataset. It has spend, so we can do real ₹ profit modelling and interpret features |
-| [Criteo Uplift v2.1](https://ailab.criteo.com/criteo-uplift-prediction-dataset/) | ~14M users, 12 anonymised features | Ad exposure randomised, about 85% treated / 15% control | visit, conversion | Scale benchmark that shows the pipeline works on production-sized data |
+| [Criteo Uplift v2.1](https://huggingface.co/datasets/criteo/criteo-uplift) (CC BY-NC-SA 4.0) | 13,979,592 users, 12 anonymised features | Ad exposure randomised, about 85% treated / 15% control | visit, conversion | Scale benchmark that shows the pipeline works on production-sized data |
 
 Both datasets come from **randomised controlled trials**, so the treatment assignment is independent of the features.
 That is the assumption that lets us read the uplift estimates causally.
 
 > ⚠️ **Leakage trap:** Criteo's `exposure` column is a *post-treatment* variable. It must never be used as a feature.
+> The pipeline enforces this: `assert_no_leakage` fails the run if any post-treatment column is in the feature list.
+
+### Data validation (Phase 1)
+
+Every run checks that the experiment itself is trustworthy before any model is trained (`make validate`):
+
+| Check | Hillstrom | Criteo (full 14M) |
+|---|---|---|
+| Schema contract (Pandera, incl. *conversion ⇒ visit*, *control never exposed*) | ✅ | ✅ |
+| Row count matches published dataset | ✅ 64,000 | ✅ 13,979,592 |
+| Sample-ratio mismatch (χ² test of arm sizes) | ✅ p = 0.90 | ✅ p = 0.999 |
+| Covariate balance, max \|SMD\| < 0.1 | ✅ 0.009 | ✅ 0.049 |
+| Post-treatment leakage guard | ✅ | ✅ |
+| Average effect on visit (95% CI) | Men's email +7.66 pp [6.99, 8.32]; Women's +4.52 pp [3.89, 5.16] | +1.03 pp [1.01, 1.06] |
+
+The Hillstrom lifts reproduce the published MineThatData results exactly, and a test fails CI if they drift.
+
+### The case for uplift modelling, in one chart
+
+![Visit uplift by customer segment](reports/figures/hillstrom_uplift_by_segment.png)
+
+The women's email lifts visits by **+7.5 pp** for past women's-wear buyers but only **+1.1 pp** for everyone else, who are 45% of the customer base.
+Blanket sending wastes almost half the sends. Finding these differences one customer at a time is the uplift model's job.
+Full analysis: [`notebooks/01_eda.ipynb`](notebooks/01_eda.ipynb).
 
 ---
 
@@ -141,7 +165,7 @@ uplift/
 │   └── ROADMAP.md
 ├── notebooks/               # EDA + model comparison (exploration only, no logic lives here)
 ├── src/uplift/
-│   ├── data/                # ingest.py, validate.py, split.py
+│   ├── data/                # download.py, schemas.py, validate.py, split.py, stats.py, eda.py
 │   ├── features/            # build_features.py
 │   ├── models/              # meta_learners.py, causal_forest.py, baselines.py, registry.py
 │   ├── evaluation/          # qini.py, uplift_curves.py, calibration.py, bootstrap.py
@@ -207,18 +231,18 @@ _Table filled in automatically from MLflow runs. See `make report`._
 
 ```bash
 git clone https://github.com/<your-username>/uplift.git && cd uplift
-make install      # uv creates .venv with Python 3.11 + dev tools
-make install-ml   # causal-ML stack (econml, scikit-uplift, lightgbm)
+make install      # uv creates .venv: Python 3.11, causal-ML stack, dev tools
 make hooks        # pre-commit: ruff, mypy, large-file guard
-make check        # lint + typecheck + tests (same as CI)
+make data         # DVC pipeline: download (Hillstrom + full Criteo, ~311 MB) -> validate -> split
+make eda          # re-run the EDA notebook, refresh reports/figures/
+make check        # lint + typecheck + fast tests (same as CI)
+make test-all     # include the full-Criteo data tests
 
 # coming in later phases
-make data        # download Hillstrom (+ optional Criteo sample) and validate
 make train       # train all models, log to MLflow
 make evaluate    # Qini / uplift curves + policy simulation
 make serve       # FastAPI on :8000   (docs at /docs)
 make app         # Streamlit on :8501
-make test        # unit + model-quality tests
 ```
 
 ---
@@ -240,7 +264,7 @@ POST /score
 ## 10. Roadmap
 
 - [x] Phase 0: Repo scaffold, tooling, CI skeleton
-- [ ] Phase 1: Data ingestion, validation, EDA, ATE sanity check
+- [x] Phase 1: Data ingestion, validation, EDA, ATE sanity check
 - [ ] Phase 2: Baselines + meta-learners + causal forest
 - [ ] Phase 3: Evaluation suite + policy simulator
 - [ ] Phase 4: MLflow tracking, registry, DVC pipeline

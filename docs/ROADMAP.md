@@ -7,11 +7,13 @@ The project takes about 8–10 weeks part-time. Each phase ends with something d
 - `src/uplift` package layout, `tests/`, empty GitHub Actions CI that runs lint + tests
 - **Done when:** CI is green on an empty package.
 
-## Phase 1: Data and EDA (Week 1–2)
-- Ingestion via `sklift.datasets` (Hillstrom, Criteo) to parquet, then `dvc add`
-- Pandera schemas, SRM check, missing-value and type checks
-- EDA notebook: treatment balance, outcome rates per arm, **naive ATE with CI**
-- **Done when:** `make data` reproduces the processed data from scratch, and the ATE matches the published numbers.
+## Phase 1: Data and EDA (Week 1–2) ✅
+- Checksum-verified download of Hillstrom and the full Criteo v2.1 (official Hugging Face mirror; the old S3 bucket returns 404) to typed parquet
+- Pandera contracts, row count, SRM χ² test, covariate balance (SMD), post-treatment leakage guard → `reports/validation/`
+- Stratified (arm × conversion) 70/15/15 split with SHA-256 fingerprints; 10% stratified Criteo dev sample
+- DVC pipeline `download → validate → split` (local cache)
+- EDA notebook: outcome rates, per-arm ATE with CI, uplift by segment, signal-to-noise → training target = `visit`
+- **Done when:** `make data` reproduces the processed data from scratch, and the ATE matches the published numbers. ✔ Both verified.
 
 ## Phase 2: Models (Week 2–4)
 - Baselines: random ranking, a propensity model (to show why it fails)
