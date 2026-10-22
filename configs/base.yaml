@@ -1,0 +1,25 @@
+# Base configuration. Override per experiment by copying this file
+# (e.g. configs/criteo.yaml) and passing it to the pipeline.
+
+seed: 42
+
+paths:
+  data_dir: data
+  raw_dir: data/raw
+  processed_dir: data/processed
+  models_dir: models
+  reports_dir: reports
+
+data:
+  dataset: hillstrom          # hillstrom | criteo
+  outcome: conversion         # visit | conversion | spend (spend: hillstrom only)
+  criteo_sample_frac: 0.1     # fraction of the 14M rows used for dev runs
+  test_size: 0.15
+  val_size: 0.15
+
+policy:                       # business levers, INR
+  margin_per_conversion: 400.0
+  discount_cost: 100.0        # paid on every redeemed coupon, including "sure things"
+  contact_cost: 0.5           # per user contacted (SMS / push / email)
+  target_fraction: 0.3
+  budget: null

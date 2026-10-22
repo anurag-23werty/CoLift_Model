@@ -116,7 +116,7 @@ deployment topology. See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the phase-by-p
 
 | Layer | Tools |
 |---|---|
-| Causal ML | `econml` (CausalForestDML, X/DR-learner), `causalml` (meta-learners, uplift trees), `scikit-uplift` (metrics, datasets) |
+| Causal ML | `econml` (CausalForestDML, X/DR-learner), `causalml` (optional: uplift trees), `scikit-uplift` (metrics, datasets) |
 | Base learners | LightGBM, scikit-learn |
 | Data & validation | pandas / polars, pyarrow, Pandera, **DVC** |
 | Experiment tracking | **MLflow** (tracking and model registry; hosted free on DagsHub) |
@@ -202,13 +202,17 @@ _Table filled in automatically from MLflow runs. See `make report`._
 
 ## 8. Quickstart
 
-> Use **Python 3.11**. EconML and CausalML wheels lag behind the newest Python releases.
+> Requires [uv](https://docs.astral.sh/uv/). The project pins **Python 3.11**, because EconML wheels lag behind the newest Python releases; uv downloads it automatically.
+> On macOS, LightGBM needs OpenMP: `brew install libomp`.
 
 ```bash
 git clone https://github.com/<your-username>/uplift.git && cd uplift
-uv venv --python 3.11 && source .venv/bin/activate
-uv pip install -e ".[dev]"
+make install      # uv creates .venv with Python 3.11 + dev tools
+make install-ml   # causal-ML stack (econml, scikit-uplift, lightgbm)
+make hooks        # pre-commit: ruff, mypy, large-file guard
+make check        # lint + typecheck + tests (same as CI)
 
+# coming in later phases
 make data        # download Hillstrom (+ optional Criteo sample) and validate
 make train       # train all models, log to MLflow
 make evaluate    # Qini / uplift curves + policy simulation
@@ -235,7 +239,7 @@ POST /score
 
 ## 10. Roadmap
 
-- [ ] Phase 0: Repo scaffold, tooling, CI skeleton
+- [x] Phase 0: Repo scaffold, tooling, CI skeleton
 - [ ] Phase 1: Data ingestion, validation, EDA, ATE sanity check
 - [ ] Phase 2: Baselines + meta-learners + causal forest
 - [ ] Phase 3: Evaluation suite + policy simulator
